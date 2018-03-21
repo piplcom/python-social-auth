@@ -1,4 +1,5 @@
 """Django ORM models for Social Auth"""
+import django
 import six
 
 from django.db import models
@@ -58,10 +59,16 @@ class AbstractUserSocialAuth(models.Model, DjangoUserMixin):
 
     @classmethod
     def user_model(cls):
-        user_model = UserSocialAuth._meta.get_field('user').rel.to
+        objfield = UserSocialAuth._meta.get_field('user')
+        user_model = objfield.rel.model if hasattr(objfield, 'rel') else objfield.remote_field.model
+
         if isinstance(user_model, six.string_types):
             app_label, model_name = user_model.split('.')
-            return models.get_model(app_label, model_name)
+            if django.VERSION >= (1, 10):
+                from django.apps import apps
+                return apps.get_model(app_label, model_name)
+            else:
+                return models.get_model(app_label, model_name)
         return user_model
 
 
