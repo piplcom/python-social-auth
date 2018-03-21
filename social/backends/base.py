@@ -100,6 +100,9 @@ class BaseAuth(object):
         return self.run_pipeline(pipeline, *args, **kwargs)
 
     def run_pipeline(self, pipeline, pipeline_index=0, *args, **kwargs):
+        if pipeline_index is None:
+            pipeline_index = 0
+
         out = kwargs.copy()
         out.setdefault('strategy', self.strategy)
         out.setdefault('backend', out.pop(self.name, None) or self)
