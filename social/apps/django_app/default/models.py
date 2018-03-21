@@ -30,7 +30,7 @@ ASSOCIATION_HANDLE_LENGTH = getattr(
 
 class AbstractUserSocialAuth(models.Model, DjangoUserMixin):
     """Abstract Social Auth association model"""
-    user = models.ForeignKey(USER_MODEL, related_name='social_auth', on_delete=models.CASCADE)
+    user = models.ForeignKey(USER_MODEL, related_name='social_auth', unique=True, on_delete=models.CASCADE)
     provider = models.CharField(max_length=32)
     uid = models.CharField(max_length=UID_LENGTH)
     extra_data = JSONField()
